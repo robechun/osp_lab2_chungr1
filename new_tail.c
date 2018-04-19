@@ -2,13 +2,17 @@
 #include <string.h>
 #include <stdlib.h>
 
+// LineNode definition
 typedef struct lineNode {
-	char *gotLine;
-	struct lineNode *prev;
-	size_t length;
+	char *gotLine;			// the line got
+	struct lineNode *next;	// the next node pointer
+	size_t length;			// lenght of line
 } line_node;
 
+// Function prototypes
 void deallocate(line_node *);
+line_node* deallocateLineNode(line_node *);
+
 int main(int argc, char*argv[]) {
 	// Initialize variables to use for getline() and fopen()
 	FILE *fs;
@@ -17,7 +21,9 @@ int main(int argc, char*argv[]) {
 	size_t bufferLen = 0;
 	size_t len = 0;
 	ssize_t nread;
-	line_node *cur = NULL;
+	size_t linesToRead = 5;
+	line_node *head = malloc(sizeof(line_node));
+	line_node *cur = head;
 
 	if (argc > 5) 			// Too many arguments, exit
 	{
@@ -30,30 +36,41 @@ int main(int argc, char*argv[]) {
 	// and print the last 5 messages
 	if (argc == 1)
 	{	
+		size_t linesRead = 0;
 		while ((nread = getline(&line, &len, stdin)) != -1)			// keep reading until eof or error
 		{
 			// While you have valid input, allocate these "nodes" so that
 			//  you store the line and information about the line.
-			// This kind of works like a stack, where you only have a pointer to prev
-			//  so that you traverse backwards
+			// This linked list is prepared so that you can traverse it later.
 			line_node *newNode = malloc(sizeof(line_node));			
 			newNode->gotLine = line;
 			newNode->length = len;
-			newNode->prev = cur;
-			cur = newNode;	
+			cur->next = newNode;
+			cur = cur->next;
 			line = NULL;
+			linesRead++;
+			
+			// if you exceed the # of lines to read,
+			// deallocate the head, but make sure to adjust accordingly
+			if (linesRead >= linesToRead) {
+				head = deallocateLineNode(head);
+			}	
 		}
 		
-		for (int i = 0; i < 5; i++) {
-			if (!cur)
+		if (linesRead < linesToRead)
+			cur = head->next;
+		else
+			cur = head;
+		
+		for (int i = 0; i < linesToRead; i++) {
+			if (!cur) 
+			{
 				return 0;
+			}
 			fwrite(cur->gotLine, cur->length, 1, stdout);
-			free(cur->gotLine);
-			line_node *temp = cur->prev;
-			cur = cur->prev;
-			temp = NULL;
-		}
-		deallocate(cur);
+			cur = deallocateLineNode(cur);
+		}	
+		
 	}	
 	else 
 	{
@@ -75,10 +92,14 @@ int main(int argc, char*argv[]) {
 
 void deallocate(line_node *cur){
 	while(cur) {
-		free(cur->gotLine);
-		line_node *temp = cur->prev;
-		cur = cur->prev;
-		temp = NULL;
+		cur = deallocateLineNode(cur);
 	}
+}
 
+line_node* deallocateLineNode(line_node *node) {
+	line_node *ret = node->next;
+	free(node->gotLine);
+	free(node);
+
+	return ret;
 }
