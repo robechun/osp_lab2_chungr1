@@ -2,14 +2,22 @@
 #include <string.h>
 #include <stdlib.h>
 
+typedef struct lineNode {
+	char *gotLine;
+	struct lineNode *prev;
+	size_t length;
+} line_node;
 
+void deallocate(line_node *);
 int main(int argc, char*argv[]) {
 	// Initialize variables to use for getline() and fopen()
 	FILE *fs;
 	char *line = NULL;
-	char *buffer = "";
+	char **buffer = NULL;
+	size_t bufferLen = 0;
 	size_t len = 0;
 	ssize_t nread;
+	line_node *cur = NULL;
 
 	if (argc > 5) 			// Too many arguments, exit
 	{
@@ -22,32 +30,30 @@ int main(int argc, char*argv[]) {
 	// and print the last 5 messages
 	if (argc == 1)
 	{	
-		int linesRead = 0;
 		while ((nread = getline(&line, &len, stdin)) != -1)			// keep reading until eof or error
 		{
-			char *temp;
-			if (linesRead == 5) {
-				char *firstOcc = strpbrk(buffer, "\n");
-				temp = malloc(strlen(line)+(strlen(buffer)-strlen(firstOcc))+1);		// malloc space for new line excluding oldest line
-				strcpy(temp, firstOcc);
-				strcat(temp, line);
-			}
-			else
-			{
-				temp = malloc(strlen(buffer)+strlen(line)+1);
-				strcpy(temp, buffer);
-				strcat(temp, line);
-				linesRead++;
-			}
-		
-			// free the dynamic memory that we allocated to do buffering
-			free(buffer);
-			buffer = temp;
-			temp = NULL;
-			
+			// While you have valid input, allocate these "nodes" so that
+			//  you store the line and information about the line.
+			// This kind of works like a stack, where you only have a pointer to prev
+			//  so that you traverse backwards
+			line_node *newNode = malloc(sizeof(line_node));			
+			newNode->gotLine = line;
+			newNode->length = len;
+			newNode->prev = cur;
+			cur = newNode;	
+			line = NULL;
 		}
-
-		fwrite(buffer,strlen(buffer),1,stdout);
+		
+		for (int i = 0; i < 5; i++) {
+			if (!cur)
+				return 0;
+			fwrite(cur->gotLine, cur->length, 1, stdout);
+			free(cur->gotLine);
+			line_node *temp = cur->prev;
+			cur = cur->prev;
+			temp = NULL;
+		}
+		deallocate(cur);
 	}	
 	else 
 	{
@@ -67,3 +73,12 @@ int main(int argc, char*argv[]) {
 	return 0;
 }
 
+void deallocate(line_node *cur){
+	while(cur) {
+		free(cur->gotLine);
+		line_node *temp = cur->prev;
+		cur = cur->prev;
+		temp = NULL;
+	}
+
+}
