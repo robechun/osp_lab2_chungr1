@@ -48,7 +48,7 @@ int main(int argc, char*argv[]) {
 				//  argv[i+1] is the string to be searched, '.' is the character to look for
 				if (strrchr(argv[i+1], '.'))
 				{
-					printf("Arguments not in correct order");
+					printf("Arguments not in correct order\n");
 					exit(EXIT_FAILURE);
 				}
 				linesToRead = atoi(argv[i+1]);
