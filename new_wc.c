@@ -21,42 +21,45 @@ int main(int argc, char*argv[]) {
 	size_t linesRead = 0;								// Number of lines read
 	line_node *head = malloc(sizeof(line_node));		// dummy head pointer for the linked-list
 	line_node *cur = head;								// cur pointer for traversing
+	bool fileFound = false;
+	bool flagFound = false;
+	
 
-	if (argc > 4) 			// Too many arguments, exit
+	if (argc > 3) 			// Too many arguments, exit
 	{
 		printf("Too many arguments!\n");
 		exit(EXIT_FAILURE);
 	}
 	else  
 	{
-		// if new_tail is invoked by itself,
-		// read from stdin until ctrl-d
-		// and print the last 5 messages
-		if (argc == 1)
-			fs = stdin;
-		
+		// If invoked by itself without flags, we exit gracefully
+		if (argc == 1) {
+			printf("Not enough arguments\n");
+			exit(EXIT_FAILURE);
+		}
 		// Loop through each argument to get correct idea of what the arguments should be.
-		// If argc == 1, this loop will not trigger
 		for (int i = 1; i < argc; i++) 
 		{
-			if (strcmp(argv[i], "-n") == 0 && i+1 < argc) 
+			if (strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "-l" == 0)
 			{
-				// if you can find a . character
-				//  must mean that it is the wrong order of arguments
-				//  strrchr will return a pointer to the . character if found
-				//  in which case you want to exit gracefully
-				//  argv[i+1] is the string to be searched, '.' is the character to look for
-				if (strrchr(argv[i+1], '.'))
-				{
-					printf("Arguments not in correct order\n");
-					exit(EXIT_FAILURE);
-				}
-				linesToRead = atoi(argv[i+1]);
+				flagFound = true;
+				// TODO: set flag to rightone
+			
 			}
-		
+			
 			// If you can find a dot, it corresponds to a file
 			if (strrchr(argv[i], '.'))
+			{
+				// If more than one file is specified, exit gracefully
+				if (fileFound)
+				{
+					printf("Please specify only one file\n");
+					fclose(fs);
+					exit(EXIT_FAILURE);
+				}
+				fileFound = true;
 				fs = fopen(argv[i], "r");
+			}
 		}	
 			
 		if (fs == NULL)					// fs failed to open, exit gracefully
