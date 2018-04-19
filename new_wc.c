@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 // LineNode definition
 typedef struct lineNode {
@@ -13,7 +14,7 @@ typedef struct lineNode {
 line_node* deallocateLineNode(line_node *);
 
 int main(int argc, char*argv[]) {
-	FILE *fs;											// File to be opened for write
+	FILE *fs = stdout;									// File to be opened for write
 	char *line = NULL;									// line used for getline
 	size_t len = 0;										// length of line used for getline
 	ssize_t nread;										// bytes read for getLine
@@ -23,6 +24,10 @@ int main(int argc, char*argv[]) {
 	line_node *cur = head;								// cur pointer for traversing
 	bool fileFound = false;
 	bool flagFound = false;
+	bool lineFlag = false;
+	size_t numOfLines = 0;
+	size_t numOfChars = 0;
+	size_t numOfWords = 0;
 	
 
 	if (argc > 3) 			// Too many arguments, exit
@@ -40,10 +45,19 @@ int main(int argc, char*argv[]) {
 		// Loop through each argument to get correct idea of what the arguments should be.
 		for (int i = 1; i < argc; i++) 
 		{
-			if (strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "-l" == 0)
+			if (strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "-l" == 0))
 			{
+				if (flagFound)
+				{
+					printf("Please only specify one flag\n");
+					exit(EXIT_FAILURE);
+				}
+
 				flagFound = true;
-				// TODO: set flag to rightone
+				// If the flag is regarding line,
+				//  set the lineFlag to be true;
+				if (strcmp(argv[i], "-l") == 0)
+					lineFlag = true;
 			
 			}
 			
@@ -53,58 +67,53 @@ int main(int argc, char*argv[]) {
 				// If more than one file is specified, exit gracefully
 				if (fileFound)
 				{
-					printf("Please specify only one file\n");
 					fclose(fs);
+					printf("Please specify only one file\n");
 					exit(EXIT_FAILURE);
 				}
 				fileFound = true;
 				fs = fopen(argv[i], "r");
 			}
 		}	
-			
-		if (fs == NULL)					// fs failed to open, exit gracefully
+	
+		// fs failed to open, exit gracefully.
+		if (fs == NULL)
 		{
 			printf("Error opening file specified.\n");
 			exit(EXIT_FAILURE);
 		}
 
-		// ************ BUFFERING *************** // 
+		// If no flags are found, exit gracefully.
+		if (!flagFound) 
+		{
+			printf("No flags specified\n");
+			exit(EXIT_FAILURE);
+		}
+
+		// read each line and get number of words/lines
 		while ((nread = getline(&line, &len, fs)) != -1) 			// keep reading until eof or error
 		{
-			// While you have valid input, allocate these "nodes" so that
-			//  you store the line and information about the line.
-			// This linked list is prepared so that you can traverse it later.
-			line_node *newNode = malloc(sizeof(line_node));			
-			newNode->gotLine = line;
-			newNode->length = len;
-			cur->next = newNode;
-			cur = cur->next;
-			line = NULL;
-			linesRead++;
-			
-			// if you exceed the # of lines to read,
-			// deallocate the head, but make sure to adjust accordingly
-			if (linesRead >= linesToRead) {
-				head = deallocateLineNode(head);
-			}	
-		}
-	
-		// re-adjust cur pointer if there are less than 5 lines read
-		//  This is because we have a dummy node at head in the beginning
-		if (linesRead < linesToRead)
-			cur = head->next;
-		else
-			cur = head;
-	
-		// Print out the results in the buffer
-		// Also free up memory as you go
-		for (int i = 0; i < linesToRead; i++) {
-			if (!cur) 
-				return 0;
+			// if successfully read, increment numOfLines by 1
+			numOfLines++;
 
-			fwrite(cur->gotLine, cur->length, 1, stdout);
-			cur = deallocateLineNode(cur);
-		}	
+			// Go through the returned line and count # of characters and words
+			for (int i = 0; i < len; i++) 
+			{
+				numOfChars++;
+				if (line[i] == ' ') 
+				{
+					while (line[++i] != ' ') {}
+					numOfWords++;
+				}
+			}
+		}
+
+		if (lineFlag) 
+			printf("Number of Lines:%d\n", numOfLines);
+		else
+			printf("Number of Characters:%d\n", numOfChars);
+
+		printf("Number of Words:%d\n", numOfWords);
 		fclose(fs);			// close the file stream
 	}
 
