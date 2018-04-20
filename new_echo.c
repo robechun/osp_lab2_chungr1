@@ -10,9 +10,12 @@ int main(int argc, char*argv[]) {
 	}	
 	else 
 	{
+		// loop through all the arguments in argv
+		//  and print it out exactly as so.
 		for (int i = 1; i < argc; i++)
 			printf("%s ", argv[i]);
 
+		// print out newline at the end
 		printf("\n");
 	}
 
