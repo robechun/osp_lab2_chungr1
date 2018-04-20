@@ -39,6 +39,9 @@ int main(int argc, char*argv[]) {
 		// If argc == 1, this loop will not trigger
 		for (int i = 1; i < argc; i++) 
 		{
+			// strcmp takes in two arguments, both "string"
+		    //  and compares them
+			//  returns 0 if they are the same
 			if (strcmp(argv[i], "-n") == 0 && i+1 < argc) 
 			{
 				// if you can find a . character
