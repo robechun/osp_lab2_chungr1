@@ -18,14 +18,14 @@ int main(int argc, char*argv[]) {
 
 	if (argc > 3) 			// Too many arguments, exit
 	{
-		printf("Too many arguments!\n");
+		fprintf(stderr, "Too many arguments!\n");
 		exit(EXIT_FAILURE);
 	}
 	else  
 	{
 		// If invoked by itself without flags, we exit gracefully
 		if (argc == 1) {
-			printf("Not enough arguments\n");
+			fprintf(stderr, "Not enough arguments\n");
 			exit(EXIT_FAILURE);
 		}
 
@@ -40,7 +40,7 @@ int main(int argc, char*argv[]) {
 				// If there are multiple flags, then exit gracefully
 				if (flagFound)
 				{
-					printf("Please only specify one flag\n");
+					fprintf(stderr, "Please only specify one flag\n");
 					exit(EXIT_FAILURE);
 				}
 
@@ -65,7 +65,7 @@ int main(int argc, char*argv[]) {
 				if (fileFound)
 				{
 					fclose(fs);
-					printf("Please specify only one file\n");
+					fprintf(stderr, "Please specify only one file\n");
 					exit(EXIT_FAILURE);
 				}
 				fileFound = true;
@@ -81,14 +81,14 @@ int main(int argc, char*argv[]) {
 		// fs failed to open, exit gracefully.
 		if (fs == NULL)
 		{
-			printf("Error opening file specified.\n");
+			fprintf(stderr, "Error opening file specified.\n");
 			exit(EXIT_FAILURE);
 		}
 
 		// If no flags are found, exit gracefully.
 		if (!flagFound) 
 		{
-			printf("Error discerning flags.\n");
+			fprintf(stderr, "Error discerning flags.\n");
 			exit(EXIT_FAILURE);
 		}
 

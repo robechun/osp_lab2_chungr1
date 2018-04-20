@@ -1,0 +1,1 @@
+For lab 2, should we consider standalone punctuation a "word" - for instance, the dash in this sentence?

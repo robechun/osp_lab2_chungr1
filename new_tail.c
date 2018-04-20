@@ -24,7 +24,7 @@ int main(int argc, char*argv[]) {
 
 	if (argc > 4) 			// Too many arguments, exit
 	{
-		printf("Too many arguments!\n");
+		fprintf(stderr, "Too many arguments!\n");
 		exit(EXIT_FAILURE);
 	}
 	else  
@@ -51,7 +51,7 @@ int main(int argc, char*argv[]) {
 				//  argv[i+1] is the string to be searched, '.' is the character to look for
 				if (strrchr(argv[i+1], '.'))
 				{
-					printf("Arguments not in correct order\n");
+					fprintf(stderr, "Arguments not in correct order\n");
 					exit(EXIT_FAILURE);
 				}
 				linesToRead = atoi(argv[i+1]);
@@ -64,7 +64,7 @@ int main(int argc, char*argv[]) {
 			
 		if (fs == NULL)					// fs failed to open, exit gracefully
 		{
-			printf("Error opening file specified.\n");
+			fprintf(stderr, "Error opening file specified.\n");
 			exit(EXIT_FAILURE);
 		}
 
