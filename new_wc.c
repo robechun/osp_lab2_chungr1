@@ -3,25 +3,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-// LineNode definition
-typedef struct lineNode {
-	char *gotLine;			// the line got
-	struct lineNode *next;	// the next node pointer
-	size_t length;			// lenght of line
-} line_node;
-
-// Function prototypes
-line_node* deallocateLineNode(line_node *);
-
 int main(int argc, char*argv[]) {
-	FILE *fs = stdout;									// File to be opened for write
+	FILE *fs = stdin;									// File to be opened for write
 	char *line = NULL;									// line used for getline
 	size_t len = 0;										// length of line used for getline
 	ssize_t nread;										// bytes read for getLine
-	size_t linesToRead = 5;								// lines to read specified by -n (N)
-	size_t linesRead = 0;								// Number of lines read
-	line_node *head = malloc(sizeof(line_node));		// dummy head pointer for the linked-list
-	line_node *cur = head;								// cur pointer for traversing
 	bool fileFound = false;
 	bool flagFound = false;
 	bool lineFlag = false;
@@ -86,24 +72,26 @@ int main(int argc, char*argv[]) {
 		// If no flags are found, exit gracefully.
 		if (!flagFound) 
 		{
-			printf("No flags specified\n");
+			printf("Error discerning flags.\n");
 			exit(EXIT_FAILURE);
 		}
 
 		// read each line and get number of words/lines
 		while ((nread = getline(&line, &len, fs)) != -1) 			// keep reading until eof or error
 		{
+			size_t lineLength = strlen(line);
+			bool ignore = true;
 			// if successfully read, increment numOfLines by 1
 			numOfLines++;
-
+			numOfChars += lineLength;
 			// Go through the returned line and count # of characters and words
-			printf("len=%d\n",len);
-			for (int i = 0; i < len; i++) 
+			for (int i = 0; i < lineLength; i++) 
 			{
-				numOfChars++;
 				if (line[i] == ' ' || line[i] == '\n') 
+					ignore = true;
+				else if (ignore)
 				{
-					while (line[i] == ' ' || line[i] == '\n') { i++; }
+					ignore = false;
 					numOfWords++;
 				}
 			}
@@ -121,14 +109,3 @@ int main(int argc, char*argv[]) {
 	return 0;
 }
 
-// deallocateLineNode takes in a line_node pointer
-//  and deallocates dynamic memory inside the struct
-//  as well as the node itself.
-// Returns: the pointer pointing to the next node of the passed in node.
-line_node* deallocateLineNode(line_node *node) {
-	line_node *ret = node->next;
-	free(node->gotLine);
-	free(node);
-
-	return ret;
-}
