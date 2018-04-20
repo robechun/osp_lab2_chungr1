@@ -42,8 +42,16 @@ int main(int argc, char*argv[]) {
 			// strcmp takes in two arguments, both "string"
 		    //  and compares them
 			//  returns 0 if they are the same
-			if (strcmp(argv[i], "-n") == 0 && i+1 < argc) 
+			if (!strcmp(argv[i], "-n"))
 			{
+				// If -n is at the end of argument list, we know it's not right
+				// Exit gracefully
+				if (i+1 >= argc)
+				{
+					fprintf(stderr, "Arguments incorrect\n");
+					exit(EXIT_FAILURE);
+				}
+
 				// if you can find a . character
 				//  must mean that it is the wrong order of arguments
 				//  strrchr will return a pointer to the . character if found
@@ -55,11 +63,17 @@ int main(int argc, char*argv[]) {
 					exit(EXIT_FAILURE);
 				}
 				linesToRead = atoi(argv[i+1]);
+				i++;
 			}
 		
 			// If you can find a dot, it corresponds to a file
-			if (strrchr(argv[i], '.'))
+			else if (strrchr(argv[i], '.'))
 				fs = fopen(argv[i], "r");
+			else
+			{
+				fprintf(stderr, "Arguments incorrect!\n");
+				exit(EXIT_FAILURE);
+			}
 		}	
 			
 		if (fs == NULL)					// fs failed to open, exit gracefully
