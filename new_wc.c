@@ -45,7 +45,7 @@ int main(int argc, char*argv[]) {
 		// Loop through each argument to get correct idea of what the arguments should be.
 		for (int i = 1; i < argc; i++) 
 		{
-			if (strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "-l" == 0))
+			if ((!strcmp(argv[i], "-c")) || (!strcmp(argv[i], "-l")))
 			{
 				if (flagFound)
 				{
@@ -97,12 +97,13 @@ int main(int argc, char*argv[]) {
 			numOfLines++;
 
 			// Go through the returned line and count # of characters and words
+			printf("len=%d\n",len);
 			for (int i = 0; i < len; i++) 
 			{
 				numOfChars++;
-				if (line[i] == ' ') 
+				if (line[i] == ' ' || line[i] == '\n') 
 				{
-					while (line[++i] != ' ') {}
+					while (line[i] == ' ' || line[i] == '\n') { i++; }
 					numOfWords++;
 				}
 			}
