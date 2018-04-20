@@ -30,7 +30,7 @@ int main(int argc, char*argv[]) {
 			fwrite(line,nread,1,stdout);			
 		}
 	}	
-	else 
+	else
 	{
 		// fopen opens the file specified in the first argument
 		//  2nd argument says that it's opened for read only
