@@ -4,16 +4,16 @@
 #include <stdbool.h>
 
 int main(int argc, char*argv[]) {
-	FILE *fs = stdin;									// File to be opened for write
-	char *line = NULL;									// line used for getline
-	size_t len = 0;										// length of line used for getline
-	ssize_t nread;										// bytes read for getLine
-	bool fileFound = false;								// flag to indicate if file is part of argv
-	bool flagFound = false;								// flag to indicate if flag is part of argv
-	bool lineFlag = false;								// flag to indicate the argv flag is -l
-	size_t numOfLines = 0;								// number of lines read
-	size_t numOfChars = 0;								// number of chars read
-	size_t numOfWords = 0;								// number of words read
+	FILE *fs = stdin;			// File to be opened for write
+	char *line = NULL;			// line used for getline
+	size_t len = 0;				// length of line used for getline
+	ssize_t nread;				// bytes read for getLine
+	bool fileFound = false;		// flag to indicate if file is part of argv
+	bool flagFound = false;		// flag to indicate if flag is part of argv
+	bool lineFlag = false;		// flag to indicate the argv flag is -l
+	size_t numOfLines = 0;		// number of lines read
+	size_t numOfChars = 0;		// number of chars read
+	size_t numOfWords = 0;		// number of words read
 
 
 	if (argc > 3) 			// Too many arguments, exit
@@ -29,7 +29,8 @@ int main(int argc, char*argv[]) {
 			exit(EXIT_FAILURE);
 		}
 
-		// Loop through each argument to get correct idea of what the arguments should be.
+		// Loop through each argument to get correct idea 
+		// of what the arguments should be.
 		for (int i = 1; i < argc; i++) 
 		{
 			// strcmp takes in two arguments, both "string"
@@ -57,7 +58,8 @@ int main(int argc, char*argv[]) {
 			// strrchr takes in two arguments, *char and char
 			//  The first argument is the string to be searched
 			//  The second argument is the char to be looked for
-			//  strrchr returns a pointer to the first occurance (backwards) matching 2nd arg
+			//  strrchr returns a pointer to the 
+			//  first occurance (backwards) matching 2nd arg
 			// in our case, if you can find a dot, it corresponds to a file
 			if (strrchr(argv[i], '.'))
 			{
@@ -97,9 +99,9 @@ int main(int argc, char*argv[]) {
 		//  returns number of characters read.
 		//  if unsuccessful, returns -1.
 		// read each line and get number of words/lines
-		while ((nread = getline(&line, &len, fs)) != -1) 			// keep reading until eof or error
+		while ((nread = getline(&line, &len, fs)) != -1)
 		{
-			bool ignore = true;							// flag for a "keepgoing" when we discern words
+			bool ignore = true;	 // flag for a "keepgoing" when we discern words
 
 			// update line and char count
 			numOfLines++;

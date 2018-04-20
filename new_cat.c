@@ -22,10 +22,12 @@ int main(int argc, char*argv[]) {
 		//  and stores that line in the first argument (line)
 		//  returns number of characters read.
 		//  if unsuccessful, returns -1.
-		// read each line and get number of words/lines
-		while ((nread = getline(&line, &len, stdin)) != -1)			// keep reading until eof or error
+		// read each line and get number of words/lines		
+		// keep reading until eof or error
+		while ((nread = getline(&line, &len, stdin)) != -1)
 		{
-			// fwrite writes the contents of line, with # of bytes to write specified by nread
+			// fwrite writes the contents of line, 
+			//  with # of bytes to write specified by nread
 			//  of size 1 to stdout
 			fwrite(line,nread,1,stdout);			
 		}
@@ -36,15 +38,16 @@ int main(int argc, char*argv[]) {
 		//  2nd argument says that it's opened for read only
 		//  returns NULL if can't open file
 		//  else, returns a pointer to the file opened
-		fs = fopen(argv[1], "r");		// open the file of specified by user for read
+		fs = fopen(argv[1], "r");		
+
 		if (fs == NULL)					// fs failed to open, exit gracefully
 		{
 			fprintf(stderr, "Error opening file specified.\n");
 			exit(EXIT_FAILURE);
 		}
-		while ((nread = getline(&line, &len, fs)) != -1) 			// keep reading until eof or error
+		while ((nread = getline(&line, &len, fs)) != -1)
 		{
-			fwrite(line,nread,1,stdout);						// write contents of line to stdout
+			fwrite(line,nread,1,stdout);	// write contents of line to stdout
 		}	
 		
 		free(line);			// free dynamic memory

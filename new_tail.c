@@ -13,14 +13,16 @@ typedef struct lineNode {
 line_node* deallocateLineNode(line_node *);
 
 int main(int argc, char*argv[]) {
-	FILE *fs;											// File to be opened for write
-	char *line = NULL;									// line used for getline
-	size_t len = 0;										// length of line used for getline
-	ssize_t nread;										// bytes read for getLine
-	size_t linesToRead = 5;								// lines to read specified by -n (N)
-	size_t linesRead = 0;								// Number of lines read
-	line_node *head = malloc(sizeof(line_node));		// dummy head pointer for the linked-list
-	line_node *cur = head;								// cur pointer for traversing
+	FILE *fs;								// File to be opened for write
+	char *line = NULL;						// line used for getline
+	size_t len = 0;							// length of line used for getline
+	ssize_t nread;							// bytes read for getLine
+	size_t linesToRead = 5;					// lines to read specified by -n (N)
+	size_t linesRead = 0;					// Number of lines read
+	
+	// dummy head pointer for the linked-list
+	line_node *head = malloc(sizeof(line_node));	
+	line_node *cur = head;						// cur pointer for traversing
 
 	if (argc > 4) 			// Too many arguments, exit
 	{
@@ -35,7 +37,8 @@ int main(int argc, char*argv[]) {
 		if (argc == 1)
 			fs = stdin;
 		
-		// Loop through each argument to get correct idea of what the arguments should be.
+		// Loop through each argument to get correct idea
+		// of what the arguments should be.
 		// If argc == 1, this loop will not trigger
 		for (int i = 1; i < argc; i++) 
 		{
@@ -56,7 +59,8 @@ int main(int argc, char*argv[]) {
 				//  must mean that it is the wrong order of arguments
 				//  strrchr will return a pointer to the . character if found
 				//  in which case you want to exit gracefully
-				//  argv[i+1] is the string to be searched, '.' is the character to look for
+				//  argv[i+1] is the string to be searched, '.' is the 
+				//  character to look for
 				if (strrchr(argv[i+1], '.'))
 				{
 					fprintf(stderr, "Arguments not in correct order\n");
@@ -83,7 +87,8 @@ int main(int argc, char*argv[]) {
 		}
 
 		// ************ BUFFERING *************** // 
-		while ((nread = getline(&line, &len, fs)) != -1) 			// keep reading until eof or error
+		// keep reading until eof or error
+		while ((nread = getline(&line, &len, fs)) != -1) 		
 		{
 			// While you have valid input, allocate these "nodes" so that
 			//  you store the line and information about the line.
